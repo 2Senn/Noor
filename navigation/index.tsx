@@ -1,12 +1,7 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MainScreen from "../screens/main-screen";
-import { View, Text, HStack } from "native-base";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { BlurView } from 'expo-blur'
-import { ImageBackground, StyleSheet } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient'
+import { View } from "native-base";
 import QuranScreen from "../screens/quran-screen";
 import HadithScreen from "../screens/hadith-screen";
 import AboutScreen from "../screens/about-screen";
@@ -18,27 +13,28 @@ const Tabs = createBottomTabNavigator()
 
 
 export default function App() {
+
   return (
     <View flex={1}>
       <Tabs.Navigator
-        initialRouteName="Prayer"
+        initialRouteName="الصلاة"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size, iconName }: any) => {
 
-            if (route.name === 'Prayer') {
+            if (route.name === 'الصلاة') {
               iconName = focused
                 ? 'time'
                 : 'time-outline';
 
-            } else if (route.name === 'Quran') {
+            } else if (route.name === 'القران') {
               iconName = focused
                 ? 'ios-book'
                 : 'ios-book-outline'
-            } else if (route.name === 'Hadith') {
+            } else if (route.name === 'الحديث') {
               iconName = focused
                 ? 'checkmark-done-circle'
                 : 'checkmark-done-circle-outline'
-            } else if (route.name === 'About') {
+            } else if (route.name === 'تعريف') {
               iconName = focused
                 ? 'help-circle'
                 : 'help-circle-outline'
@@ -47,17 +43,24 @@ export default function App() {
               <Tab route={route} size={size} color={color} iconName={iconName} focused={focused} />
             );
           },
-          tabBarActiveTintColor: '#7F6E68',
-          tabBarInactiveTintColor: '#000',
+          tabBarActiveTintColor: '#FEEAE6',
+          tabBarInactiveTintColor: 'rgba(255,255,255,0.5)',
           tabBarShowLabel: false,
           tabBarStyle: {
             position: 'absolute',
             bottom: 25,
             left: 15,
             right: 15,
-            elevation: 0,
+            elevation: 10,
             borderRadius: 25,
             height: 65,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 5,
+              height: 5,
+            },
+            shadowOpacity: 1,
+            shadowRadius: 12,
           },
           tabBarItemStyle: {
             alignSelf: 'center',
@@ -65,16 +68,16 @@ export default function App() {
             borderRadius: 100,
           },
           headerShown: false,
+
           tabBarBackground: () => (
             <Glass />
           ),
-
         })}
       >
-        <Tabs.Screen name="Prayer" component={MainScreen} />
-        <Tabs.Screen name="Quran" component={QuranScreen} />
-        <Tabs.Screen name="Hadith" component={HadithScreen} />
-        <Tabs.Screen name="About" component={AboutScreen} />
+        <Tabs.Screen name="تعريف" component={AboutScreen} />
+        <Tabs.Screen name="الحديث" component={HadithScreen} />
+        <Tabs.Screen name="القران" component={QuranScreen} />
+        <Tabs.Screen name="الصلاة" component={MainScreen} />
       </Tabs.Navigator>
     </View>
   )

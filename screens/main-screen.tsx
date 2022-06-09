@@ -5,8 +5,7 @@ import { StyleSheet } from "react-native";
 import AnimatedColorBox from "../components/animated-color-box";
 
 export const MainScreen = () => {
-  const bg = useColorModeValue("primary.300", "#000")
-  const statusBarColor = useColorModeValue("#000", "grey")
+  const bg = useColorModeValue("#FEEAE6", "#000")
   return (
     <AnimatedColorBox
       flex={1}
@@ -18,7 +17,6 @@ export const MainScreen = () => {
       />
       <View style={styles.header}>
         <View style={styles.inner}>
-          <Box backgroundColor="#FEDBD0" style={StyleSheet.absoluteFill} />
         </View>
       </View>
     </AnimatedColorBox>
