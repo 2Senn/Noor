@@ -1,107 +1,88 @@
-/**
- * If you are not familiar with React Navigation, refer to the "Fundamentals" guide:
- * https://reactnavigation.org/docs/getting-started
- *
- */
-import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MainScreen from "../screens/main-screen";
+import { View, Text } from "native-base";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { BlurView } from 'expo-blur'
+import { ImageBackground, StyleSheet } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient'
+import QuranScreen from "../screens/quran-screen";
+import HadithScreen from "../screens/hadith-screen";
+import AboutScreen from "../screens/about-screen";
+import Glass from "../components/glass";
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
-import LinkingConfiguration from './LinkingConfiguration';
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
-    </NavigationContainer>
-  );
+const Tabs = createBottomTabNavigator()
+
+interface Props {
+  route: any,
+  iconName: any,
 }
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-function RootNavigator() {
+export default function App() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
-  );
-}
+    <View flex={1}>
+      <Tabs.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size, iconName }: any) => {
 
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'time'
+                : 'time-outline';
 
-function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
+            } else if (route.name === 'Quran') {
+              iconName = focused
+                ? 'ios-book'
+                : 'ios-book-outline'
+            } else if (route.name === 'Hadith') {
+              iconName = focused
+                ? 'checkmark-done-circle'
+                : 'checkmark-done-circle-outline'
+            } else if (route.name === 'About') {
+              iconName = focused
+                ? 'help-circle'
+                : 'help-circle-outline'
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'white',
+          tabBarLabel: ({ focused }) => {
+            return <Text style={{ fontSize: 12, fontWeight: '600', color: '#fff' }}>{focused ? route.name : ""}</Text>
+          },
+          tabBarStyle: {
+            position: 'absolute',
+            bottom: 25,
+            left: 15,
+            right: 15,
+            elevation: 0,
+            borderRadius: 25,
+            height: 65,
+            alignItems: 'center',
+            justifyContent: 'center'
+          },
+          tabBarItemStyle: {
+            borderRadius: 100,
+            flexDirection: "row",
 
-  return (
-    <BottomTab.Navigator
-      initialRouteName="TabOne"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
-      <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
+          },
+          headerShown: false,
+          tabBarBackground: () => (
+            <Glass />
           ),
+
         })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
+      >
+        <Tabs.Screen name="Home" component={MainScreen} />
+        <Tabs.Screen name="Quran" component={QuranScreen} />
+        <Tabs.Screen name="Hadith" component={HadithScreen} />
+        <Tabs.Screen name="About" component={AboutScreen} />
+      </Tabs.Navigator>
+    </View>
+  )
 }
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}
+
