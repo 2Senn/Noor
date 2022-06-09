@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 import AnimatedColorBox from "../components/animated-color-box";
 
 export const MainScreen = () => {
-  const bg = useColorModeValue("#e9f1fd", "#000")
+  const bg = useColorModeValue("primary.300", "#000")
   const statusBarColor = useColorModeValue("#000", "grey")
   return (
     <AnimatedColorBox
