@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import LottieView from "lottie-react-native";
 import { FlatList, HStack, Icon, Text, View, VStack } from "native-base";
@@ -6,9 +7,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import shortid from "shortid";
 
-const { width, height } = Dimensions.get('screen')
+export const { width, height } = Dimensions.get('screen')
 
-const SPACING = 10
+export const SPACING = 10
 const CELL_WIDTH = width * 0.7
 const CELL_HEIGHT = CELL_WIDTH * 0.6
 const FULL_SIZE = CELL_WIDTH + SPACING * 2
@@ -27,6 +28,7 @@ const PrayerData = (props: PrayerOptions) => {
     Naskh: require('../../src/fonts/naskhBold.ttf'),
   });
 
+  const navigation = useNavigation<any>()
 
   const [prayers, setPrayers] = useState<any>([])
 
@@ -122,7 +124,9 @@ const PrayerData = (props: PrayerOptions) => {
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => { }}
+                  onPress={() => {
+                    navigation.navigate('PrayDetails', { item })
+                  }}
                   style={{
                     width: CELL_WIDTH,
                     height: CELL_HEIGHT,
@@ -158,10 +162,10 @@ const PrayerData = (props: PrayerOptions) => {
               return (
                 <HStack style={styles.prayTable} space={7} >
                   <Text style={{ fontSize: 16 }} >{item.time}</Text>
-                  <Text style={{ fontSize: 16 }}>{item.name}</Text>
-                  <View alignItems="center" justifyContent="flex-end">
+                  <HStack space={3} >
+                    <Text style={{ fontSize: 16, fontWeight: '600' }}>{item.name}</Text>
                     <Icon as={Feather} size="md" name={item.iconName} color={"black"} />
-                  </View>
+                  </HStack>
                 </HStack>
               )
             }}

@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler'
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MainScreen from "../screens/main-screen";
@@ -7,12 +8,13 @@ import HadithScreen from "../screens/hadith-screen";
 import AboutScreen from "../screens/about-screen";
 import Glass from "../components/glass";
 import Tab from "../components/tab";
-
+import PrayerDetails from '../screens/prayer-details';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const Tabs = createBottomTabNavigator()
+const Stack = createStackNavigator()
 
-
-export default function App() {
+function App() {
 
   return (
     <View flex={1}>
@@ -82,5 +84,21 @@ export default function App() {
     </View>
   )
 }
+
+function prayStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name="Home" component={App} />
+      <Stack.Screen name="PrayDetails" component={PrayerDetails} />
+    </Stack.Navigator>
+  )
+}
+
+export default prayStack
 
 
