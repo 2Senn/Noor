@@ -1,20 +1,31 @@
-import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import { Box, HStack, Image, Text, useColorModeValue, View } from "native-base";
-import React from "react";
-import { StyleSheet } from "react-native";
+import { Box, Button, HStack, Icon, Image, Text, useColorModeValue, View, VStack } from "native-base";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
 import AnimatedColorBox from "../components/animated-color-box";
 import PrayHeader from "../components/headers/prayer-header";
-import PrayerData from "../components/api-related/prayer-cards";
+import PrayerData, { height } from "../components/api-related/prayer-cards";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import About, { SPRING_CONFIG } from "../components/bottom-sheets/about";
+
 
 export const MainScreen = () => {
 
   //colors
   const bg = useColorModeValue("#FEEAE6", "#000")
 
-  const method = 3
+  //PrayerSettings
+  const method = 3;
   const city = "Amman"
   const country = "Jordan"
+
+  //BottomSheet stuff
+  const dimensions = useWindowDimensions()
+  const top = useSharedValue(
+    dimensions.height
+  )
 
   return (
     <AnimatedColorBox
@@ -27,19 +38,30 @@ export const MainScreen = () => {
         hidden
       />
       <View style={styles.header}>
-        <View style={styles.inner}>
+        <HStack justifyContent="space-between">
+          <TouchableOpacity
+            onPress={() => {
+              top.value = withSpring(
+                dimensions.height / 3,
+                SPRING_CONFIG
+              )
+            }
+            }
+          >
+            <Icon as={FontAwesome5} name="question-circle" size={"xl"} color={"rgba(0,0,0,0.6)"} />
+          </TouchableOpacity>
           <PrayHeader />
-        </View>
+        </HStack>
       </View>
       <View style={styles.cards}>
         <View style={styles.inner}>
           <PrayerData method={method} city={city} country={country} />
         </View>
       </View>
+      <About top={top} dimensions={dimensions} />
     </AnimatedColorBox>
   )
 }
-
 const styles = StyleSheet.create({
   header: {
     width: "100%",

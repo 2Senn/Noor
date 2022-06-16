@@ -1,25 +1,24 @@
 import React from "react";
-import { View, Text, Image, HStack, Icon } from 'native-base'
+import { View, Text, Image, HStack, Icon, VStack } from 'native-base'
 import Hijri from "../api-related/hijri";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Time from "../api-related/current-time";
 
 
 export const PrayHeader = () => {
 
   //call api
   const hijriDate = Hijri()
-
+  const time = Time()
 
   return (
-    <HStack justifyContent="space-between">
-      <TouchableOpacity onPress={() => { }}>
-        <Icon as={Ionicons} name="settings" size={"lg"} />
-      </TouchableOpacity>
-      <HStack alignItems="center" space={3} justifyContent="center" >
-        <Image alt="Icon by Freepik" source={require("../../src/images/calendar.png")} width={25} height={25} />
+    <HStack alignItems="center" space={3} justifyContent="center" >
+      <Image alt="Icon by Freepik" source={require("../../src/images/calendar.png")} width={25} height={25} />
+      <VStack space={2}>
         <Text style={styles.hijri}>{hijriDate}</Text>
-      </HStack>
+        <Text style={styles.hijri}>{time}</Text>
+      </VStack>
     </HStack>
   )
 }
