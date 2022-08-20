@@ -10,6 +10,7 @@ import Glass from "../components/glass";
 import Tab from "../components/tab";
 import PrayerDetails from '../screens/prayer-details';
 import { createStackNavigator } from '@react-navigation/stack';
+import Test from '../screens/test-screen';
 
 const Tabs = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -95,6 +96,7 @@ function prayStack() {
     >
       <Stack.Screen name="Home" component={App} />
       <Stack.Screen name="PrayDetails" component={PrayerDetails} />
+      <Stack.Screen name="Test" component={Test} />
     </Stack.Navigator>
   )
 }

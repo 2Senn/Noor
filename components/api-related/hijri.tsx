@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import LoadingIndicator from "../loading-indicator"
 
 export const Hijri = () => {
 
   const [date, setDate] = useState('')
   const [hijriDate, setHijriDate] = useState("")
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     var year = new Date().getFullYear()
@@ -17,23 +19,27 @@ export const Hijri = () => {
 
   const url = `https://api.aladhan.com/v1/gToH?date=${date}`
 
-  const fetchHijri = useCallback(async () => {
+  const fetchHijri = async () => {
     try {
       let response = await fetch(url)
       let json = await response.json()
       setHijriDate(json.data.hijri.date)
+      setLoading(false)
     } catch (error) {
       console.log(error)
     }
-  }, [])
+
+  }
 
   useEffect(() => {
     fetchHijri()
   }, [fetchHijri])
 
-  return (
-    hijriDate
+  
+  return(
+    loading ? <LoadingIndicator size={50} /> : hijriDate 
   )
+
 }
 
 export default Hijri
