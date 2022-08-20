@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Box, Button, HStack, Icon, Image, Text, useColorModeValue, View, VStack } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
 import AnimatedColorBox from "../components/animated-color-box";
 import PrayHeader from "../components/headers/prayer-header";
@@ -9,7 +9,6 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import About, { SPRING_CONFIG } from "../components/bottom-sheets/about";
-
 
 export const MainScreen = () => {
 
@@ -26,6 +25,7 @@ export const MainScreen = () => {
   const top = useSharedValue(
     dimensions.height
   )
+  
 
   return (
     <AnimatedColorBox

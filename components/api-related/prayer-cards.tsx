@@ -3,9 +3,18 @@ import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import LottieView from "lottie-react-native";
 import { FlatList, HStack, Icon, Text, View, VStack } from "native-base";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import shortid from "shortid";
+import Time from "./current-time";
+import CompareTime from "../compare-time";
+import TimeNumber from "../time";
+import axios from 'axios'
+import { parseInt } from "lodash";
+import LoadingIndicator from "../loading-indicator";
+import Prayers from "./pray-times";
+import Hijri from "./hijri";
+import DateAndTime from "../date-and-time";
 
 export const { width, height } = Dimensions.get('screen')
 
@@ -28,25 +37,40 @@ const PrayerData = (props: PrayerOptions) => {
     Naskh: require('../../src/fonts/naskhBold.ttf'),
   });
 
+  // Navigation
   const navigation = useNavigation<any>()
 
+  // Use States
   const [prayers, setPrayers] = useState<any>([])
+  const [wantedIndex, setWantedIndex] = useState<any>(2)
+  const [loading, setLoading] = useState(true)
 
+  // Flatlist Ref
+  const cardRef = useRef(null)
+  var time = TimeNumber() 
   const url = `https://api.aladhan.com/v1/timingsByCity?city=${props.city}&country=${props.country}&method=${props.method}`
-  const fetchPrayers = useCallback(async () => {
-    try {
-      let response = await fetch(url)
-      let json = await response.json()
-      setPrayers(json.data.timings)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [])
+  
 
   useEffect(() => {
+    async function fetchPrayers(){
+      const request = await axios.get(url)
+      setPrayers(request.data.data.timings)
+      setLoading(false)
+    }
     fetchPrayers()
-  }, [fetchPrayers])
+    
+  }, [url])
 
+  useEffect(() => {
+    if(!loading){
+      const index = CompareTime(time, prayers.Fajr, prayers.Sunrise, prayers.Dhuhr, prayers.Asr, prayers.Maghrib, prayers.Isha)
+      console.log(index)
+      setWantedIndex(index)
+    }
+    onScrollToItemSelected()
+
+  }, [time])
+  // Data
   const data = [
     {
       key: shortid.generate(),
@@ -104,17 +128,30 @@ const PrayerData = (props: PrayerOptions) => {
     },
   ]
 
+    
+  const onScrollToItemSelected = () => {
+    
+    if(cardRef.current){
+      cardRef.current.scrollToIndex({index: wantedIndex})
+    }
+  }
+
   return (
-    <VStack w="100%" h="100%" space={1}>
-      <View width={"100%"} h="5%">
-        <View flex={1}>
-          <Text >إضغط لفائدة</Text>
-        </View>
-      </View>
+    <VStack w="100%" h="100%" space={5}>
+      {loading ? <LoadingIndicator size={100}/> : (
       <View w="100%" h="60%" >
+          <View width={"100%"} height={"10%"} bottom={2}>
+            <TouchableOpacity onPress={onScrollToItemSelected}>
+              <Icon as={Feather} name={"refresh-cw"} size={"xl"}/>
+            </TouchableOpacity>
+          </View>
         <View flex={1}>
           <FlatList
             data={data}
+            ref={cardRef}
+            getItemLayout={(data, index) => ({
+              length: CELL_WIDTH, offset: CELL_WIDTH * index * 2, index
+            })}
             keyExtractor={(item) => item.key}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -152,8 +189,12 @@ const PrayerData = (props: PrayerOptions) => {
             }}
           />
         </View>
+      </View>)}
+      <View w="100%" h="10%" p={2}>
+       <DateAndTime /> 
       </View>
-      <View w="100%" h="80%">
+      {loading ? <LoadingIndicator size={100} /> : (
+      <View w="100%" h="80%" bgColor={"rgba(255, 223, 211, 0.7)"} p={5} borderRadius={"50%"}>
         <View flex={1}>
           <FlatList
             data={data}
@@ -172,6 +213,7 @@ const PrayerData = (props: PrayerOptions) => {
           />
         </View>
       </View>
+      )}
     </VStack>
   )
 
@@ -197,8 +239,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     paddingVertical: 10,
-
-
   }
 })
 

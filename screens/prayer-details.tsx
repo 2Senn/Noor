@@ -74,7 +74,7 @@ export const PrayerDetails = (props: Props) => {
           height: "50%",
           borderRadius: 45,
           backgroundColor: "rgba(255,255,255,0.5)",
-          top: 5,
+          top: 15,
           padding: 5,
         }}
       >
